@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+
+<div class="app">
+
+    <!-- BAL PANEL -->
+    <div class="left-panel">
+        <div class="date">
+            <h2 id="location">Város neve..</h2>
+            <p id="date"></p>
+            <p id="dateDay"></p>
+        </div>
+
+        <div class="weather-main">
+            <div class="icon" id="iconData">☀️</div>
+            <h1 id="temperature">29°C</h1>
+            <p class="status">Sunny</p>
+        </div>
+    </div>
+
+
+    <div class="right-panel">
+
+        <!-- KERESŐ -->
+        <div class="search-box">
+            <input type="text" id="cityInput" placeholder="Város keresése...">
+            
+            <p id="moreInfo"></p>
+        </div>
+
+        <!-- EXTRA INFÓ -->
+        <div class="details">
+            <div>
+                <p>Csapadék</p>
+                <span id="precipitation">0%</span>
+            </div>
+            <div>
+                <p>Páratartalom</p>
+                <span id="humidity">34%</span>
+            </div>
+            <div>
+                <p>Szél</p>
+                <span id="wind">0 km/h</span>
+            </div>
+        </div>
+
+        <!-- 5 NAP -->
+        <div class="forecast">
+            <div class="day active">
+                <p>Tue</p>
+                <span>☀️</span>
+                <h4>29°C</h4>
+            </div>
+            <div class="day">
+                <p>Wed</p>
+                <span>☁️</span>
+                <h4>21°C</h4>
+            </div>
+            <div class="day">
+                <p>Thu</p>
+                <span>🌧️</span>
+                <h4>8°C</h4>
+            </div>
+            <div class="day">
+                <p>Fri</p>
+                <span>🌤️</span>
+                <h4>19°C</h4>
+            </div>
+            <div class="day">
+                <p>Sat</p>
+                <span>🌩️</span>
+                <h4>17°C</h4>
+            </div>
+        </div>
+
+        <button id="searchBtn" class="change-btn">Keresés</button>
+
+    </div>
+
+</div>
+    <script src="scirpts/script.js"></script>
+    <script src="scirpts/masik.js"></script>
+</body>
+</html>
