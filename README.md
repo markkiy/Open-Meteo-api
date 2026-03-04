@@ -1,8 +1,8 @@
 
 # A projektet készítették:
-- Név1
-- Név2
+- Homoki Márk
+- Hornyik Zsombor
 
 # Következő API-kat használtuk:
-- Api1
-- Api2
+- Open Meteo
+- Open Meteo  (GeoCoding)
