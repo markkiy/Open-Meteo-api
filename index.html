@@ -1,90 +1,172 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8">
-    <title>Weather App</title>
-    <link rel="stylesheet" href="styles/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Country Cards</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #f2f2f7, #e5e5ea);
+    padding: 50px 20px;
+    color: #1d1d1f;
+}
+
+.app {
+    max-width: 1100px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 50px;
+    font-weight: 600;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+/* alap card */
+.card {
+    background: #ffffffcc;
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+}
+
+/* NAGY képes card */
+.card.large {
+    grid-column: span 2;
+    padding: 0;
+    overflow: hidden;
+}
+
+.card.large img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+.card.large .content {
+    padding: 20px;
+}
+
+.card.large h2 {
+    margin: 0;
+    font-weight: 600;
+}
+
+/* kicsi text card */
+.card.small {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+.label {
+    font-size: 13px;
+    opacity: 0.6;
+    margin-bottom: 6px;
+}
+
+.value {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card.large {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 500px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .card.large {
+        grid-column: span 1;
+    }
+}
+</style>
+
 </head>
 <body>
 
 <div class="app">
+    <h1>Hungary Overview</h1>
 
-    <!-- BAL PANEL -->
-    <div class="left-panel">
-        <div class="date">
-            <h2 id="location">Város neve..</h2>
-            <p id="date"></p>
-            <p id="dateDay"></p>
-        </div>
+    <div class="cards">
 
-        <div class="weather-main">
-            <div class="icon" id="iconData">☀️</div>
-            <h1 id="temperature">29°C</h1>
-            <p class="status">Sunny</p>
-        </div>
-    </div>
-
-
-    <div class="right-panel">
-
-        <!-- KERESŐ -->
-        <div class="search-box">
-            <input type="text" id="cityInput" placeholder="Város keresése...">
-            
-            <p id="moreInfo"></p>
-        </div>
-
-        <!-- EXTRA INFÓ -->
-        <div class="details">
-            <div>
-                <p>Csapadék</p>
-                <span id="precipitation">0%</span>
-            </div>
-            <div>
-                <p>Páratartalom</p>
-                <span id="humidity">34%</span>
-            </div>
-            <div>
-                <p>Szél</p>
-                <span id="wind">0 km/h</span>
+        <!-- NAGY FLAG CARD -->
+        <div class="card large">
+            <img src="https://flagcdn.com/w1280/hu.png" alt="Hungary Flag">
+            <div class="content">
+                <h2>Hungary 🇭🇺</h2>
             </div>
         </div>
 
-        <!-- 5 NAP -->
-        <div class="forecast">
-            <div class="day active">
-                <p>Tue</p>
-                <span>☀️</span>
-                <h4>29°C</h4>
-            </div>
-            <div class="day">
-                <p>Wed</p>
-                <span>☁️</span>
-                <h4>21°C</h4>
-            </div>
-            <div class="day">
-                <p>Thu</p>
-                <span>🌧️</span>
-                <h4>8°C</h4>
-            </div>
-            <div class="day">
-                <p>Fri</p>
-                <span>🌤️</span>
-                <h4>19°C</h4>
-            </div>
-            <div class="day">
-                <p>Sat</p>
-                <span>🌩️</span>
-                <h4>17°C</h4>
+        <!-- NAGY COAT CARD -->
+        <div class="card large">
+            <img src="https://mainfacts.com/media/images/coats_of_arms/hu.png" alt="Coat of Arms">
+            <div class="content">
+                <h2>Coat of Arms</h2>
             </div>
         </div>
 
-        <button id="searchBtn" class="change-btn">Keresés</button>
+        <!-- KICSI INFÓ CARDOK -->
+        <div class="card small">
+            <div class="label">Capital</div>
+            <div class="value">Budapest</div>
+        </div>
+
+        <div class="card small">
+            <div class="label">Population</div>
+            <div class="value">9,600,000</div>
+        </div>
+
+        <div class="card small">
+            <div class="label">Region</div>
+            <div class="value">Central Europe</div>
+        </div>
+
+        <div class="card small">
+            <div class="label">Area</div>
+            <div class="value">93,030 km²</div>
+        </div>
+
+        <div class="card small">
+            <div class="label">Currency</div>
+            <div class="value">Hungarian Forint</div>
+        </div>
+
+        <div class="card small">
+            <div class="label">Language</div>
+            <div class="value">Hungarian</div>
+        </div>
 
     </div>
-
 </div>
-    <script src="scirpts/script.js"></script>
-    <script src="scirpts/masik.js"></script>
+
 </body>
 </html>

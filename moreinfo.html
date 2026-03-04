@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Country Cards</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #f2f2f7, #e5e5ea);
+    padding: 40px 20px;
+    color: #1d1d1f;
+}
+
+.app {
+    max-width: 1000px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 40px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: #ffffffcc;
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+}
+
+.card img {
+    width: 100%;
+    border-radius: 16px;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.label {
+    font-size: 13px;
+    opacity: 0.6;
+    margin-bottom: 8px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="app">
+    <h1>Country Overview</h1>
+
+    <div class="cards">
+
+        <!-- Flag Card -->
+        <div class="card">
+            <img src="https://flagcdn.com/w640/hu.png" alt="Hungary Flag">
+            <h3>Hungary</h3>
+        </div>
+
+        <div class="card">
+            <div class="label">Capital</div>
+            <h3>Budapest</h3>
+        </div>
+
+        <div class="card">
+            <div class="label">Population</div>
+            <h3>9,600,000</h3>
+        </div>
+
+        <div class="card">
+            <div class="label">Region</div>
+            <h3>Europe (Central Europe)</h3>
+        </div>
+
+        <div class="card">
+            <div class="label">Area</div>
+            <h3>93,030 km²</h3>
+        </div>
+
+        <div class="card">
+            <div class="label">Currency</div>
+            <h3>Hungarian Forint (HUF)</h3>
+        </div>
+
+        <div class="card">
+            <div class="label">Language</div>
+            <h3>Hungarian</h3>
+        </div>
+
+        <div class="card">
+            <div class="label">Time Zone</div>
+            <h3>UTC+1</h3>
+        </div>
+
+        <div class="card">
+            <div class="label">Coat of Arms</div>
+            <img src="https://mainfacts.com/media/images/coats_of_arms/hu.png" alt="Hungary Coat">
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
