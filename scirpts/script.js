@@ -8,9 +8,8 @@ const dateDayValue = document.getElementById("dateDay");
 const iconData = document.getElementById("iconData");
 const precipitationValue = document.getElementById("precipitation");
 const statusValue = document.querySelector(".status")
-let country;
-const moreInfo = document.getElementById("moreInfo")
 
+const moreInfo = document.getElementById("moreInfo")
 
 async function GetWeather() {
     const cityInput = document.getElementById("cityInput").value;
@@ -22,7 +21,7 @@ async function GetWeather() {
     const lat = geoData.results[0].latitude
     const lon = geoData.results[0].longitude
     const timezone = geoData.results[0].timezone;
-    country = geoData.results[0].country;
+    document.cookie = `country=${geoData.results[0].country}`;
     
     const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weather_code,temperature_2m_max&timezone=auto&hourly=relative_humidity_2m,precipitation_probability`)
     const weatherData = await weatherResponse.json();
@@ -133,6 +132,3 @@ function getKmh(mph){
     const changeNumber = 1.609344;
     return Math.floor(mph * changeNumber);
 }
-
-
-module.exports = {country};
