@@ -9,7 +9,7 @@ async function getCountry(){
         capital.innerHTML = "Capital: N/A";
         return;
     }
-    const res = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(country)}`);
+    const res = await fetch(`https://restcountries.com/v3.1/translation/${encodeURIComponent(country)}`);
 
     const data = await res.json();
     

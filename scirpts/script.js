@@ -32,17 +32,16 @@ async function GetWeather() {
     const lat = geoData.results[0].latitude
     const lon = geoData.results[0].longitude
     const timezone = geoData.results[0].timezone;
-    document.cookie = `country=cigany`;
-    console.log(document.cookie)
     
     // Open Meteo API (Lekerjük az időjárási adatokat)
     const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weather_code,temperature_2m_max&timezone=auto&hourly=relative_humidity_2m,precipitation_probability`)
     const weatherData = await weatherResponse.json();
-
-
-
     
-
+    
+    
+    console.log(geoData.results[0].country)
+    const countryValue = geoData.results[0].country;
+    document.cookie = `country=${countryValue}; path=/; max-age=31536000; SameSite=Lax`; // 1 évig érvényes cookie
     const city = geoData.results[0].name;
     const humidity = weatherData.hourly.relative_humidity_2m[0];
     const wind = getKmh(weatherData.current_weather.windspeed);
@@ -56,6 +55,8 @@ async function GetWeather() {
     dailyForcast(weatherData.daily)
     moreInfo.innerHTML = `Szeretnel többet megtudni <a href="moreinfo.html">${geoData.results[0].country}</a>-ról?`
     moreInfo.style.display = "block"
+
+
     // Tároljuk a legutolsó várost localStorage-ban
     localStorage.setItem('lastCity', city);
 
@@ -149,11 +150,11 @@ function getKmh(mph){
     return Math.floor(mph * changeNumber);
 }
 
-// Oldal betöltésekor ellenőrizzük a localStorage-t és töltjük be az utolsó várost
+
 window.addEventListener('DOMContentLoaded', () => {
     const lastCity = localStorage.getItem('lastCity');
     if (lastCity) {
         document.getElementById('cityInput').value = lastCity;
-        GetWeather(); // Automatikusan lekérjük az időjárást
+        GetWeather();
     }
 });
