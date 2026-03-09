@@ -8,21 +8,34 @@ const dateDayValue = document.getElementById("dateDay");
 const iconData = document.getElementById("iconData");
 const precipitationValue = document.getElementById("precipitation");
 const statusValue = document.querySelector(".status")
-
+const loader = document.getElementById("loader");
 const moreInfo = document.getElementById("moreInfo")
 
 async function GetWeather() {
+    // UI várakozik
+    temperatureValue.textContent = "...";
+    cityName.textContent = "Betöltés...";
+    windValue.textContent = "...";
+    humadityValue.textContent = "...";
+    precipitationValue.textContent = "...";
+    searchBtn.disabled = true;
+    loader.style.display = "block";
+    //City input / vizsgálás
     const cityInput = document.getElementById("cityInput").value;
     if (!cityInput) return;
 
-    const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${cityInput}&count=10&language=hu`)
+
+    //Geo API (Lekérjük a kordinátákat)
+    const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${cityInput}&count=1&language=hu`)
     const geoData = await geoResponse.json();
 
     const lat = geoData.results[0].latitude
     const lon = geoData.results[0].longitude
     const timezone = geoData.results[0].timezone;
-    document.cookie = `country=${geoData.results[0].country}`;
+    document.cookie = `country=cigany`;
+    console.log(document.cookie)
     
+    // Open Meteo API (Lekerjük az időjárási adatokat)
     const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weather_code,temperature_2m_max&timezone=auto&hourly=relative_humidity_2m,precipitation_probability`)
     const weatherData = await weatherResponse.json();
 
@@ -37,11 +50,14 @@ async function GetWeather() {
     const icon = weatherData.current_weather.weathercode
     
     const perci = weatherData.hourly.precipitation_probability[0];
-    console.log(perci)
     writeData(city, temp, humidity, wind, timezone, icon, perci)
+    searchBtn.disabled = false;
+    loader.style.display = "none";
     dailyForcast(weatherData.daily)
     moreInfo.innerHTML = `Szeretnel többet megtudni <a href="moreinfo.html">${geoData.results[0].country}</a>-ról?`
     moreInfo.style.display = "block"
+    // Tároljuk a legutolsó várost localStorage-ban
+    localStorage.setItem('lastCity', city);
 
 }
 
@@ -74,18 +90,18 @@ searchBtn.addEventListener("click", GetWeather);
 
 
 function writeData(city, temp, hum, wind, timezone, icon, perci) {
-    cityName.innerHTML = city;
-    temperatureValue.innerHTML = `${temp}°C`;
-    windValue.innerHTML = `${wind}km/h`;
-    humadityValue.innerHTML = `${hum}%`;
+    cityName.textContent  = city;
+    temperatureValue.textContent  = `${Math.round(temp)}°C`;
+    windValue.textContent  = `${wind}km/h`;
+    humadityValue.textContent  = `${hum}%`;
     const now = new Date();
     const options = {timeZone: `${timezone}`, year: 'numeric', month: 'short', day: 'numeric' };
-    dateDayValue.innerHTML =  now.toLocaleDateString("hu-HU", { weekday: "long",timeZone: `${timezone}` })
-    dateValue.innerHTML = now.toLocaleDateString("hu-HU",options);
-    iconData.innerHTML = getWeatherIcon(icon)[0];
-    statusValue.innerHTML = getWeatherIcon(icon)[1];
+    dateDayValue.textContent  =  now.toLocaleDateString("hu-HU", { weekday: "long",timeZone: `${timezone}` })
+    dateValue.textContent  = now.toLocaleDateString("hu-HU",options);
+    iconData.textContent  = getWeatherIcon(icon)[0];
+    statusValue.textContent  = getWeatherIcon(icon)[1];
     
-    precipitationValue.innerHTML = `${perci}%`;
+    precipitationValue.textContent  = `${perci}%`;
     
 
 }
@@ -132,3 +148,12 @@ function getKmh(mph){
     const changeNumber = 1.609344;
     return Math.floor(mph * changeNumber);
 }
+
+// Oldal betöltésekor ellenőrizzük a localStorage-t és töltjük be az utolsó várost
+window.addEventListener('DOMContentLoaded', () => {
+    const lastCity = localStorage.getItem('lastCity');
+    if (lastCity) {
+        document.getElementById('cityInput').value = lastCity;
+        GetWeather(); // Automatikusan lekérjük az időjárást
+    }
+});
