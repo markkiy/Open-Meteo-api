@@ -32,7 +32,11 @@ async function GetWeather() {
     const lat = geoData.results[0].latitude
     const lon = geoData.results[0].longitude
     const timezone = geoData.results[0].timezone;
-    
+    if (!timezone) {
+      getLocalStore();
+      return;
+    }
+
     // Open Meteo API (Lekerjük az időjárási adatokat)
     const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weather_code,temperature_2m_max&timezone=auto&hourly=relative_humidity_2m,precipitation_probability`)
     const weatherData = await weatherResponse.json();
@@ -151,10 +155,14 @@ function getKmh(mph){
 }
 
 
-window.addEventListener('DOMContentLoaded', () => {
-    const lastCity = localStorage.getItem('lastCity');
+function getLocalStore() {
+  const lastCity = localStorage.getItem('lastCity');
     if (lastCity) {
         document.getElementById('cityInput').value = lastCity;
         GetWeather();
     }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    getLocalStore();
 });
