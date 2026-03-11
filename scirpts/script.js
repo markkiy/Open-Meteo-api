@@ -57,7 +57,14 @@ async function GetWeather() {
     searchBtn.disabled = false;
     loader.style.display = "none";
     dailyForcast(weatherData.daily)
-    moreInfo.innerHTML = `Szeretnel többet megtudni <a href="moreinfo.html">${geoData.results[0].country}</a>-ról?`
+
+    if (cityInput == "Little Saint James") {
+      moreInfo.innerHTML = `Szeretnel többet megtudni <a href="https://da.wikipedia.org/wiki/Jeffrey_Epstein">Little Saint James</a>-ról?`  
+    }
+    else{
+
+      moreInfo.innerHTML = `Szeretnel többet megtudni <a href="moreinfo.html">${geoData.results[0].country}</a>-ról?`
+    }
     moreInfo.style.display = "block"
 
 
