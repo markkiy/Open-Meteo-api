@@ -6,3 +6,4 @@
 # Következő API-kat használtuk:
 - Open Meteo
 - Open Meteo  (GeoCoding)
+- REST Countries
