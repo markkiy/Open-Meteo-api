@@ -118,6 +118,32 @@ function writeData(city, temp, hum, wind, timezone, icon, perci) {
 
 }
 
+
+//Nap választó
+
+document.addEventListener("click", (e) =>{
+  const day = document.querySelectorAll(".day");
+  console.log(e);
+  day.forEach(element => {
+        element.classList.remove("active")
+
+    });
+    if (e.target.nodeName == "P" ||e.target.nodeName == "H4" || e.target.nodeName == "SPAN") {
+      e.target.classList.add("active")  
+    }
+    else{
+      e.target.classList.add("active");
+    }
+
+})
+
+
+
+
+
+
+
+
 function getWeatherIcon(code) {
   switch (true) {
     case (code === 0):
