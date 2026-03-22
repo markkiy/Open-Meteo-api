@@ -241,3 +241,12 @@ function getLocalStore() {
 window.addEventListener('DOMContentLoaded', () => {
     getLocalStore();
 });
+
+// Enteres keresés
+const cityInputField = document.getElementById("cityInput");
+
+cityInputField.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    GetWeather();
+  }
+});
