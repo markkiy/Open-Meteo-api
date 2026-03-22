@@ -1,7 +1,7 @@
 const searchBtn = document.getElementById("searchBtn");
 const cityName = document.getElementById("location");
 const temperatureValue = document.getElementById("temperature");
-const windValue = document.getElementById("wind"); 
+const windValue = document.getElementById("wind");
 const humadityValue = document.getElementById("humidity");
 const dateValue = document.getElementById("date");
 const dateDayValue = document.getElementById("dateDay");
@@ -10,7 +10,11 @@ const precipitationValue = document.getElementById("precipitation");
 const statusValue = document.querySelector(".status")
 const loader = document.getElementById("loader");
 const moreInfo = document.getElementById("moreInfo")
-let dailyData; // Globális változó a napi adatok tárolására
+let dailyData;
+let currentWeatherData; 
+let currentHumidity;
+let currentPrecipitation;
+let currentCity; 
 
 async function GetWeather() {
     // UI várakozik
@@ -35,42 +39,53 @@ async function GetWeather() {
     const timezone = geoData.results[0].timezone;
     if (!timezone) {
       getLocalStore();
+      alert("Város nem található, kérlek próbáld újra!");
       return;
     }
 
     // Open Meteo API (Lekerjük az időjárási adatokat)
     const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&timezone=auto&hourly=relative_humidity_2m,precipitation_probability`)
     const weatherData = await weatherResponse.json();
-    
-    
-    
+
+
+
     console.log(geoData.results[0].country)
     const countryValue = geoData.results[0].country;
     document.cookie = `country=${countryValue}; path=/; max-age=31536000; SameSite=Lax`; // 1 évig érvényes cookie
-    
-    
+
+
     const perci = weatherData.hourly.precipitation_probability[0];
+    const time = weatherData.hourly.time[0];
+
+    // Tároljuk a jelenlegi időjárási adatokat globális változókban
+    currentWeatherData = weatherData.current_weather;
+    currentHumidity = weatherData.hourly.relative_humidity_2m[0]; 
+    currentPrecipitation = perci; 
+    dailyData = weatherData.daily;
     
-    writeDayData(0); // Kiírjuk a mai nap adatait
+    // UI visszaállítása
     searchBtn.disabled = false;
     loader.style.display = "none";
-    dailyData = weatherData.daily; // Tároljuk a napi adatokat
     dailyForcast(dailyData)
     
+    // Több infó link beállítása
     if (cityInput == "Little Saint James") {
-      moreInfo.innerHTML = `Szeretnel többet megtudni <a href="https://da.wikipedia.org/wiki/Jeffrey_Epstein">Little Saint James</a>-ról?`  
+      moreInfo.innerHTML = `Szeretnel többet megtudni <a href="https://da.wikipedia.org/wiki/Jeffrey_Epstein">Little Saint James</a>-ről?`
     }
     else{
-
-      moreInfo.innerHTML = `Szeretnel többet megtudni <a href="moreinfo.html">${geoData.results[0].country}</a>-ról?`
+      
+      moreInfo.innerHTML = `Szeretnel többet megtudni <a href="moreinfo.html">${geoData.results[0].country}</a>-ről?`
     }
     moreInfo.style.display = "block"
     
     
     // Tároljuk a legutolsó várost localStorage-ban
     const city = geoData.results[0].name;
+    currentCity = city; // Tároljuk globálisan
+    console.log(currentCity);
     localStorage.setItem('lastCity', city);
-
+    
+    writeDayData(0); // Kiírjuk a mai nap adatait (0. index)
 }
 
 function dailyForcast(daily) {
@@ -83,7 +98,7 @@ function dailyForcast(daily) {
     const temp = Math.round(daily.temperature_2m_max[i])
     const iconCode = daily.weather_code[i]
     const icon = getWeatherIcon(iconCode)[0]
-    
+
     const dayDiv = document.createElement("div");
     dayDiv.className = "day";
     dayDiv.dataset.index = i;
@@ -92,47 +107,46 @@ function dailyForcast(daily) {
       <p>${dayName}</p>
       <span>${icon}</span>
       <h4>${temp}°C</h4>
-    `  
+    `
       forecastContainer.appendChild(dayDiv)
   }
 
-  
+
 }
 
 searchBtn.addEventListener("click", GetWeather);
 
 
-function writeData(city, temp, hum, wind, timezone, icon, perci) {
-    cityName.textContent  = city;
-    temperatureValue.textContent  = `${Math.round(temp)}°C`;
-    windValue.textContent  = `${wind}km/h`;
-    humadityValue.textContent  = `${hum}%`;
-    const now = new Date();
-    const options = {timeZone: `${timezone}`, year: 'numeric', month: 'short', day: 'numeric' };
-    dateDayValue.textContent  =  now.toLocaleDateString("hu-HU", { weekday: "long",timeZone: `${timezone}` })
-    dateValue.textContent  = now.toLocaleDateString("hu-HU",options);
-    iconData.textContent  = getWeatherIcon(icon)[0];
-    statusValue.textContent  = getWeatherIcon(icon)[1];
-    
-    precipitationValue.textContent  = `${perci}%`;
-    
-
-}
 
 function writeDayData(dayIndex) {
-    const date = new Date(dailyData.time[dayIndex]);
-    const dayName = date.toLocaleDateString("hu-HU", { weekday: "long" });
-    const dateStr = date.toLocaleDateString("hu-HU", { year: 'numeric', month: 'short', day: 'numeric' });
-    const tempMax = Math.round(dailyData.temperature_2m_max[dayIndex]);
-    const tempMin = Math.round(dailyData.temperature_2m_min[dayIndex]);
-    const icon = dailyData.weather_code[dayIndex];
-    const wind = getKmh(dailyData.windspeed_10m_max[dayIndex]);
-    const perci = dailyData.precipitation_probability_max[dayIndex];
+    let temp, hum, wind, icon, perci, date, dayName, dateStr;
 
-    cityName.textContent = document.getElementById("cityInput").value; // Város neve marad
-    temperatureValue.textContent = `${tempMax}°C`;
+    if (dayIndex === 0) {
+        // Mai nap
+        temp = currentWeatherData.temperature;
+        hum = currentHumidity;
+        wind = getKmh(currentWeatherData.windspeed);
+        icon = currentWeatherData.weathercode;
+        perci = currentPrecipitation;
+        const now = new Date();
+        dayName = now.toLocaleDateString("hu-HU", { weekday: "long" });
+        dateStr = now.toLocaleDateString("hu-HU", { year: 'numeric', month: 'short', day: 'numeric' });
+    } else {
+        // Jövőbeli napok
+        date = new Date(dailyData.time[dayIndex]);
+        dayName = date.toLocaleDateString("hu-HU", { weekday: "long" });
+        dateStr = date.toLocaleDateString("hu-HU", { year: 'numeric', month: 'short', day: 'numeric' });
+        temp = dailyData.temperature_2m_max[dayIndex];
+        hum = "N/A"; // Nincs napi humidity
+        wind = getKmh(dailyData.windspeed_10m_max[dayIndex]);
+        icon = dailyData.weather_code[dayIndex];
+        perci = dailyData.precipitation_probability_max[dayIndex];
+    }
+
+    cityName.textContent = currentCity;
+    temperatureValue.textContent = `${Math.round(temp)}°C`;
     windValue.textContent = `${wind}km/h`;
-    humadityValue.textContent = "N/A"; // Nincs napi humidity
+    humadityValue.textContent = `${hum}%`;
     precipitationValue.textContent = `${perci}%`;
     dateDayValue.textContent = dayName;
     dateValue.textContent = dateStr;
@@ -141,26 +155,25 @@ function writeDayData(dayIndex) {
 }
 
 
-//Nap választó
-
+// Eseményfigyelő a napokra, hogy amikor rákattintanak, megjelenítse a kiválasztott nap adatait
 document.addEventListener("click", (e) =>{
   const clickedDayDiv = e.target.closest(".day");
 
-  // Ha a kattintás nem egy .day elemen vagy annak a belsejében történt, kilépünk a függvényből
+
   if (!clickedDayDiv) {
-    return; 
+    return;
   }
 
-  // 2. Leszedjük az összes .day elemről az "active" osztályt
+
   const allDays = document.querySelectorAll(".day");
   allDays.forEach(element => {
     element.classList.remove("active");
   });
 
-  // 3. Rátesszük az "active" osztályt arra a .day div-re, amelyikben a kattintás történt
+
   clickedDayDiv.classList.add("active");
 
-  // 4. Kiírjuk az adott nap adatait
+
   const dayIndex = parseInt(clickedDayDiv.dataset.index);
   writeDayData(dayIndex);
 
@@ -172,7 +185,7 @@ document.addEventListener("click", (e) =>{
 
 
 
-
+// Időjárás ikonok visszaadása kód alapján
 function getWeatherIcon(code) {
   switch (true) {
     case (code === 0):
@@ -210,13 +223,13 @@ function getWeatherIcon(code) {
   }
 }
 
-
+// MPH-t km/h-ra váltó függvény
 function getKmh(mph){
     const changeNumber = 1.609344;
     return Math.floor(mph * changeNumber);
 }
 
-
+// LocalStorage-ból lekéri a legutolsó várost és megjeleníti az időjárását
 function getLocalStore() {
   const lastCity = localStorage.getItem('lastCity');
     if (lastCity) {
@@ -224,7 +237,7 @@ function getLocalStore() {
         GetWeather();
     }
 }
-
+// Oldal betöltésekor megpróbálja lekérni a legutolsó várost a localStorage-ból
 window.addEventListener('DOMContentLoaded', () => {
     getLocalStore();
 });
